@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>@scope/nestjs-panel — Usage Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --color-primary: #475569;
+      --color-secondary: #64748b;
+      --color-accent: #0ea5e9;
+      --color-accent-dark: #0284c7;
+      --color-background: #f8fafc;
+      --color-foreground: #1e293b;
+      --color-muted: #eaeff3;
+      --color-border: #e2e8f0;
+      --color-surface: #ffffff;
+      --color-code-bg: #0f172a;
+      --color-code-fg: #e2e8f0;
+      --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    @page { size: A4; margin: 18mm 16mm 20mm 16mm;
+      @bottom-center { content: counter(page); font-family: var(--font-sans); font-size: 9pt; color: var(--color-secondary); } }
+    @page :first { margin: 0; @bottom-center { content: none; } }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--color-background); color: var(--color-foreground);
+      font-family: var(--font-sans); font-size: 10.5pt; line-height: 1.55;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    h1, h2, h3 { font-family: var(--font-mono); font-weight: 600; line-height: 1.25; margin: 0 0 0.6em; }
+    h1 { font-size: 22pt; letter-spacing: -0.02em; }
+    h2 { font-size: 13pt; padding-bottom: 0.35em; border-bottom: 2px solid var(--color-accent); margin-bottom: 0.9em; }
+    h3 { font-size: 11pt; color: var(--color-primary); margin-top: 1.2em; }
+    p { margin: 0 0 0.75em; }
+    ul, ol { margin: 0 0 0.9em; padding-left: 1.25em; }
+    li { margin-bottom: 0.3em; }
+    code, .mono { font-family: var(--font-mono); font-size: 0.9em; }
+    code { background: var(--color-muted); padding: 0.1em 0.35em; border-radius: 3px; }
+    pre { background: var(--color-code-bg); color: var(--color-code-fg); font-family: var(--font-mono);
+      font-size: 8.5pt; line-height: 1.45; padding: 12px 14px; border-radius: 6px; margin: 0 0 1em;
+      white-space: pre-wrap; word-break: break-word; }
+    table { width: 100%; border-collapse: collapse; margin: 0 0 1.1em; font-size: 9.5pt; }
+    th, td { border: 1px solid var(--color-border); padding: 8px 10px; text-align: left; vertical-align: top; }
+    th { background: var(--color-muted); font-family: var(--font-mono); font-size: 8.5pt; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-primary); }
+    tr:nth-child(even) td { background: #fcfdfe; }
+    .cover { min-height: 297mm; page-break-after: always; display: flex; flex-direction: column;
+      justify-content: space-between; padding: 28mm 22mm;
+      background: linear-gradient(160deg, #0c4a6e 0%, #0f172a 55%, #1e293b 100%); color: #f8fafc; position: relative; overflow: hidden; }
+    .cover::before { content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 85% 15%, rgba(14,165,233,0.45), transparent 42%),
+        radial-gradient(circle at 10% 80%, rgba(148,163,184,0.14), transparent 35%); }
+    .cover-grid { position: absolute; inset: 0; opacity: 0.08;
+      background-image: linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px); background-size: 28px 28px; }
+    .cover-inner { position: relative; z-index: 1; }
+    .cover-logo { height: 42px; margin-bottom: 28px; display: block; }
+    .eyebrow { font-family: var(--font-mono); font-size: 9pt; letter-spacing: 0.16em; text-transform: uppercase;
+      color: #7dd3fc; margin-bottom: 18px; }
+    .cover h1 { color: #fff; font-size: 32pt; margin-bottom: 8px; }
+    .cover-sub { font-family: var(--font-mono); font-size: 13pt; color: #bae6fd; margin-bottom: 16px; }
+    .cover-lead { font-size: 12.5pt; font-weight: 300; max-width: 440px; color: #cbd5e1; line-height: 1.5; }
+    .cover-meta { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      border-top: 1px solid rgba(226,232,240,0.2); padding-top: 22px; font-size: 9.5pt; }
+    .cover-meta strong { display: block; font-family: var(--font-mono); font-size: 8pt; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #7dd3fc; margin-bottom: 4px; }
+    .cover-meta span { color: #e2e8f0; }
+    .page { page-break-before: always; }
+    .page:first-of-type { page-break-before: auto; }
+    .toc { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px; padding: 18px 22px; margin-bottom: 1.2em; }
+    .toc ol { margin: 0; columns: 2; column-gap: 28px; }
+    .toc li { break-inside: avoid; margin-bottom: 0.45em; font-family: var(--font-mono); font-size: 9pt; }
+    .card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.1em; }
+    .card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px; padding: 14px 16px; }
+    .card h3 { margin-top: 0; margin-bottom: 0.4em; }
+    .card p:last-child { margin-bottom: 0; }
+    .callout { border-left: 3px solid var(--color-accent); background: #f0f9ff; padding: 10px 14px; margin: 0 0 1em; border-radius: 0 6px 6px 0; }
+    .callout.warn { border-left-color: #d97706; background: #fffbeb; }
+    .kpi { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.1em; }
+    .kpi div { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px; padding: 12px; text-align: center; }
+    .kpi strong { display: block; font-family: var(--font-mono); font-size: 14pt; color: var(--color-accent-dark); margin-bottom: 2px; }
+    .kpi span { font-size: 8.5pt; color: var(--color-secondary); text-transform: uppercase; letter-spacing: 0.06em; }
+    .section-label { font-family: var(--font-mono); font-size: 8pt; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--color-accent-dark); margin-bottom: 6px; }
+    .footer-note { margin-top: 1.5em; padding-top: 0.8em; border-top: 1px solid var(--color-border);
+      font-size: 8.5pt; color: var(--color-secondary); }
+    .flow { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px;
+      padding: 14px 16px; font-family: var(--font-mono); font-size: 8.5pt; line-height: 1.6; margin-bottom: 1em; }
+  </style>
+</head>
+<body>
+
+  <section class="cover">
+    <div class="cover-grid"></div>
+    <div class="cover-inner">
+      <img class="cover-logo" src="assets/shftr-logo.webp" alt="SHFTR" />
+      <div class="eyebrow">npm package · NestJS 11</div>
+      <h1>@scope/nestjs-panel</h1>
+      <div class="cover-sub">Usage Guide</div>
+      <p class="cover-lead">
+        Official handbook for installing, configuring, and extending the SHFTR
+        decorator-driven admin panel — runtime module, generator CLI, and React SPA.
+      </p>
+    </div>
+    <div class="cover-meta">
+      <div><strong>Distribution</strong><span>npm · peer deps only for Nest</span></div>
+      <div><strong>Stack</strong><span>NestJS · React · Vite · ts-morph</span></div>
+      <div><strong>Audience</strong><span>Backend engineers integrating the panel</span></div>
+      <div><strong>Companion</strong><span>README.md on npm / GitHub</span></div>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>Contents</h2>
+    <div class="toc">
+      <ol>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Architecture</li>
+        <li>Quick start</li>
+        <li>Environment variables</li>
+        <li>NestJS integration</li>
+        <li>Controller annotations</li>
+        <li>Generator CLI</li>
+        <li>Public API</li>
+        <li>Auth &amp; security</li>
+        <li>Peer dependencies</li>
+        <li>Boundaries</li>
+      </ol>
+    </div>
+    <div class="kpi">
+      <div><strong>1</strong><span>npm install</span></div>
+      <div><strong>3</strong><span>Decorators</span></div>
+      <div><strong>0</strong><span>DB coupling</span></div>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="section-label">01</div>
+    <h2>Overview</h2>
+    <p>
+      <code>@scope/nestjs-panel</code> is a standalone npm package that adds an operator admin UI
+      to any NestJS API. Annotate controllers with <code>@PanelModule</code>, <code>@PanelApi</code>,
+      and <code>@PanelAction</code>; run the bundled generator; serve a branded React SPA from the
+      same HTTP process.
+    </p>
+    <div class="card-row">
+      <div class="card">
+        <h3>Package provides</h3>
+        <p>
+          Nest module, login endpoint, env config factory, metadata decorators, list/pagination DTOs,
+          HMAC auth, static SPA serving, ts-morph generator, and React template.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Your app provides</h3>
+        <p>
+          Nest 11 runtime, domain controllers &amp; services, <code>.env</code> values,
+          branding in bootstrap, and optionally guards on domain routes.
+        </p>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>Config split:</strong> the package defines <code>ADMIN_PANEL_*</code> keys and exports
+      <code>adminPanelConfig</code>. Your application supplies values via <code>ConfigModule</code>
+      and sets <code>title</code> / <code>theme</code> in code at bootstrap.
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="section-label">02</div>
+    <h2>Installation</h2>
+    <pre>npm install @scope/nestjs-panel</pre>
+    <p>Ensure peer dependencies are satisfied in your Nest application:</p>
+    <pre>@nestjs/common  @nestjs/core  @nestjs/config
+@nestjs/platform-express  @nestjs/swagger
+class-validator  class-transformer
+reflect-metadata  rxjs</pre>
+    <p>The generator CLI requires <code>ts-morph</code> in your project (devDependency):</p>
+    <pre>npm install -D ts-morph</pre>
+    <h3>Recommended npm script</h3>
+    <pre>{
+  "scripts": {
+    "admin:generate": "nestjs-panel generate"
+  }
+}</pre>
+    <p>
+      The <code>nestjs-panel</code> binary ships with the package. Run it from your API project root
+      (where <code>package.json</code> and controller sources live).
+    </p>
+  </section>
+
+  <section class="page">
+    <div class="section-label">03</div>
+    <h2>Architecture</h2>
+    <p>Internal clean-architecture layers (import only from the package root):</p>
+    <pre>@scope/nestjs-panel
+├── domain/           AdminPanel model, DI tokens, metadata keys
+├── application/      @Panel* decorators, DTOs, HostBootstrapOptions
+├── infrastructure/   adminPanelConfig, HMAC auth, setupAdminPanel()
+├── presentation/     AdminPanelModule, login controller
+└── generator/        CLI + React SPA template (build-time)</pre>
+    <div class="flow">
+      Runtime flow:
+      ConfigModule → AdminPanelModule → setupAdminPanel() → serve SPA + /admin-panel/config
+
+      Build-time flow:
+      @Panel* metadata → nestjs-panel generate → manifest → Vite build → dist/
+    </div>
+    <p><strong>Dependency rule:</strong> outer layers depend inward. Consumers import only from <code>@scope/nestjs-panel</code>.</p>
+  </section>
+
+  <section class="page">
+    <div class="section-label">04</div>
+    <h2>Quick start</h2>
+    <ol>
+      <li><code>npm install @scope/nestjs-panel</code></li>
+      <li>Add <code>ADMIN_PANEL_*</code> variables to your <code>.env</code></li>
+      <li>Load <code>adminPanelConfig</code> and register <code>AdminPanelModule.forRootAsync()</code></li>
+      <li>Call <code>setupAdminPanel()</code> in <code>main.ts</code> with branding</li>
+      <li>Annotate feature controllers with <code>@PanelModule</code> / <code>@PanelApi</code> / <code>@PanelAction</code></li>
+      <li>Run <code>npm run admin:generate</code></li>
+      <li>Start your Nest application</li>
+    </ol>
+    <table>
+      <thead><tr><th>Resource</th><th>URL</th></tr></thead>
+      <tbody>
+        <tr><td>Admin UI</td><td><code>http://localhost:&lt;port&gt;/&lt;ADMIN_PANEL_PATH&gt;</code></td></tr>
+        <tr><td>Login</td><td><code>POST /&lt;apiPrefix&gt;/admin-panel/login</code></td></tr>
+        <tr><td>Runtime branding</td><td><code>GET /&lt;apiPrefix&gt;/admin-panel/config</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="page">
+    <div class="section-label">05</div>
+    <h2>Environment variables</h2>
+    <p>Set these in <strong>your application's</strong> <code>.env</code>. The package reads them via <code>adminPanelConfig</code>.</p>
+    <table>
+      <thead><tr><th>Variable</th><th>Default</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>ADMIN_PANEL_ENABLED</code></td><td><code>true</code> unless production</td><td>Enable panel runtime and auth controller</td></tr>
+        <tr><td><code>ADMIN_PANEL_PATH</code></td><td><code>admin</code></td><td>URL path segment for the SPA</td></tr>
+        <tr><td><code>ADMIN_PANEL_USERNAME</code></td><td><code>admin</code></td><td>Operator login username</td></tr>
+        <tr><td><code>ADMIN_PANEL_PASSWORD</code></td><td><code>admin</code></td><td>Operator login password</td></tr>
+        <tr><td><code>ADMIN_PANEL_SECRET</code></td><td><code>change-me-in-production</code></td><td>HMAC token signing secret</td></tr>
+      </tbody>
+    </table>
+    <p>For the generator, your app should also define:</p>
+    <table>
+      <thead><tr><th>Variable</th><th>Used for</th></tr></thead>
+      <tbody>
+        <tr><td><code>APP_PORT</code></td><td>SPA build-time API base URL</td></tr>
+        <tr><td><code>APP_API_PREFIX</code></td><td>SPA build-time API prefix</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn">
+      <strong>Production:</strong> use strong credentials and secret. Set
+      <code>ADMIN_PANEL_ENABLED=false</code> when the panel is not required.
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="section-label">06</div>
+    <h2>NestJS integration</h2>
+    <h3>AppModule</h3>
+    <pre>import { adminPanelConfig, AdminPanelModule } from "@scope/nestjs-panel";
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      load: [appConfig, adminPanelConfig],
+    }),
+    AdminPanelModule.forRootAsync(),
+    // ...your feature modules
+  ],
+})
+export class AppModule {}</pre>
+    <h3>main.ts — bootstrap &amp; branding</h3>
+    <pre>import { ADMIN_PANEL, AdminPanel, setupAdminPanel } from "@scope/nestjs-panel";
+
+const adminFromEnv = app.get&lt;AdminPanel&gt;(ADMIN_PANEL);
+
+setupAdminPanel(
+  app,
+  new AdminPanel({
+    enabled: adminFromEnv.enabled,
+    path: adminFromEnv.path,
+    rootUser: adminFromEnv.rootUser,
+    secret: adminFromEnv.secret,
+    title: "Admin Panel",
+    theme: {
+      primaryColor: "#0ea5e9",
+      sidebarColor: "#0c4a6e",
+      logoIcon: "Shield",
+      subtitle: "Control Center",
+      radius: "0.75rem",
+    },
+  }),
+  { apiPrefix: appConfig.apiPrefix, port: appConfig.port },
+);</pre>
+    <p>
+      Operational settings come from env (via DI). Branding is code-only and exposed at runtime through
+      <code>GET /&lt;apiPrefix&gt;/admin-panel/config</code>.
+    </p>
+    <p>
+      Optional <code>distPath</code> on <code>HostBootstrapOptions</code> overrides where the built SPA
+      is loaded from (default: <code>&lt;cwd&gt;/admin/dist</code>).
+    </p>
+  </section>
+
+  <section class="page">
+    <div class="section-label">07</div>
+    <h2>Controller annotations</h2>
+    <table>
+      <thead><tr><th>Decorator</th><th>Target</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td><code>@PanelModule</code></td><td>Class</td><td>Sidebar entry — title, icon, order, pageType</td></tr>
+        <tr><td><code>@PanelApi</code></td><td>Method</td><td>List/info endpoint — columns, filters, pagination</td></tr>
+        <tr><td><code>@PanelAction</code></td><td>Method</td><td>CRUD action — modal form or confirm dialog</td></tr>
+      </tbody>
+    </table>
+    <pre>import {
+  PanelModule, PanelApi, PanelAction,
+  ListQueryDto, paginated,
+} from "@scope/nestjs-panel";
+
+@PanelModule({ title: "Users", icon: "Users", pageType: "list", order: 10 })
+@Controller("users")
+export class UsersController {
+  @Get()
+  @PanelApi({ title: "Users", columns: ["id", "email"], pagination: true })
+  findAll(@Query() query: UsersListQueryDto) {
+    return paginated(rows, total, query.page ?? 1, query.limit ?? 20);
+  }
+
+  @Post()
+  @PanelAction({ type: "create", label: "Create", dto: CreateUserDto })
+  create(@Body() dto: CreateUserDto) { /* ... */ }
+}</pre>
+    <p><strong>Page types:</strong> <code>list</code> · <code>info</code> · <code>dashboard</code> · <code>custom</code></p>
+    <p>Only controllers decorated with <code>@PanelModule</code> appear in the generated sidebar.</p>
+  </section>
+
+  <section class="page">
+    <div class="section-label">08</div>
+    <h2>Generator CLI</h2>
+    <pre>nestjs-panel generate
+# or: npm run admin:generate</pre>
+    <div class="flow">
+      Scan controllers → write manifest → sync React template → vite build → dist/
+    </div>
+    <ol>
+      <li>Scans your Nest controllers for <code>@Panel*</code> metadata (ts-morph).</li>
+      <li>Writes a manifest consumed by the React SPA.</li>
+      <li>Syncs the bundled SPA template and runs <code>npm install</code> + <code>npm run build</code>.</li>
+      <li>Output defaults to <code>admin/dist</code> relative to your project root.</li>
+    </ol>
+    <p>
+      Run the generator whenever controller metadata changes, and before production builds that ship
+      the admin UI alongside the API.
+    </p>
+    <div class="callout">
+      If <code>dist/</code> is missing at startup, <code>setupAdminPanel</code> logs a warning and
+      skips static serving until you run the generator.
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="section-label">09</div>
+    <h2>Public API</h2>
+    <p>Import everything from the package root:</p>
+    <table>
+      <thead><tr><th>Export</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>AdminPanelModule</code></td><td>Dynamic Nest module (<code>forRoot</code> / <code>forRootAsync</code>)</td></tr>
+        <tr><td><code>adminPanelConfig</code></td><td><code>registerAs("adminPanel")</code> factory for ConfigModule</td></tr>
+        <tr><td><code>setupAdminPanel</code></td><td>Mount SPA + runtime config endpoint</td></tr>
+        <tr><td><code>AdminPanel</code>, <code>ADMIN_PANEL</code></td><td>Config model and DI token</td></tr>
+        <tr><td><code>PanelModule</code>, <code>PanelApi</code>, <code>PanelAction</code></td><td>Metadata decorators</td></tr>
+        <tr><td><code>ListQueryDto</code>, <code>paginated</code></td><td>Shared list/pagination helpers</td></tr>
+        <tr><td><code>HostBootstrapOptions</code></td><td><code>{ apiPrefix, port, distPath? }</code></td></tr>
+      </tbody>
+    </table>
+    <p>Generator internals, auth service implementation, and template paths are not part of the public API.</p>
+  </section>
+
+  <section class="page">
+    <div class="section-label">10</div>
+    <h2>Auth &amp; security</h2>
+    <table>
+      <thead><tr><th>Endpoint</th><th>Behaviour</th></tr></thead>
+      <tbody>
+        <tr><td><code>POST /admin-panel/login</code></td><td>Validates operator credentials; returns HMAC Bearer token (24h TTL)</td></tr>
+        <tr><td><code>GET /admin-panel/config</code></td><td>Public JSON — <code>title</code> and <code>theme</code></td></tr>
+        <tr><td>Your domain routes</td><td>Not guarded by default — SPA sends Bearer; add guards in your app if needed</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Panel login is independent of your application's user authentication. Treat
+      <code>ADMIN_PANEL_USERNAME</code> / <code>ADMIN_PANEL_PASSWORD</code> as operator secrets.
+    </p>
+    <p><code>AdminPanelAuthService.verifyToken()</code> is available for optional custom guards.</p>
+  </section>
+
+  <section class="page">
+    <div class="section-label">11</div>
+    <h2>Peer dependencies</h2>
+    <p>The package does not bundle Nest. Your application must provide:</p>
+    <table>
+      <thead><tr><th>Package</th><th>Version</th></tr></thead>
+      <tbody>
+        <tr><td><code>@nestjs/common</code></td><td>^11</td></tr>
+        <tr><td><code>@nestjs/core</code></td><td>^11</td></tr>
+        <tr><td><code>@nestjs/config</code></td><td>^4</td></tr>
+        <tr><td><code>@nestjs/platform-express</code></td><td>^11</td></tr>
+        <tr><td><code>@nestjs/swagger</code></td><td>^11 (optional, used by DTOs)</td></tr>
+        <tr><td><code>class-validator</code> / <code>class-transformer</code></td><td>^0.14 / ^0.5</td></tr>
+        <tr><td><code>reflect-metadata</code> / <code>rxjs</code></td><td>^0.2 / ^7</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Node.js</strong> 20+ required.</p>
+  </section>
+
+  <section class="page">
+    <div class="section-label">12</div>
+    <h2>Boundaries</h2>
+    <ul>
+      <li>No database, Redis, or ORM coupling — works with any Nest data layer.</li>
+      <li>Does not replace application authentication or authorization.</li>
+      <li>Does not auto-guard your CRUD endpoints with panel tokens.</li>
+      <li>Branding (<code>title</code>, <code>theme</code>) is never read from env — configure in bootstrap code.</li>
+      <li>Generator output is a build artifact in your project — treat as deploy output, not package source.</li>
+    </ul>
+    <div class="footer-note">
+      @scope/nestjs-panel Usage Guide · Built by SHFTR · Version 0.1.0 ·
+      Keep in sync when public API, env keys, or CLI behaviour changes.
+    </div>
+  </section>
+
+</body>
+</html>

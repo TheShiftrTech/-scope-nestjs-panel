@@ -1,0 +1,28 @@
+{
+  "name": "@scope/nestjs-panel",
+  "version": "0.1.0",
+  "description": "Decorator-driven NestJS admin panel — runtime module, SPA generator, and static serving by SHFTR",
+  "main": "index.ts",
+  "bin": {
+    "nestjs-panel": "./bin/nestjs-panel.js"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/config": "^4.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/platform-express": "^11.0.0",
+    "@nestjs/swagger": "^11.0.0",
+    "class-transformer": "^0.5.0",
+    "class-validator": "^0.14.0",
+    "reflect-metadata": "^0.2.0",
+    "rxjs": "^7.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@nestjs/swagger": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
