@@ -1,5 +1,5 @@
 {
-  "name": "@scope/nestjs-panel",
+  "name": "@theshiftrtech/nestjs-panel",
   "version": "0.1.0",
   "description": "Decorator-driven NestJS admin panel — runtime module, SPA generator, and static serving by SHFTR",
   "main": "index.ts",
