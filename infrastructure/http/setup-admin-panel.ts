@@ -28,20 +28,14 @@ export function setupAdminPanel(
   const apiPrefix = host.apiPrefix.replace(/^\/|\/$/g, "");
   const configPath = `/${apiPrefix}/admin-panel/config`;
 
-  httpAdapter.get(
-    configPath,
-    (
-      _req: unknown,
-      res: {
-        json: (body: AdminPanelPublicConfig) => void;
-      },
-    ) => {
-      res.json({
-        title: adminPanel.title,
-        theme: adminPanel.theme,
-      });
-    },
-  );
+  // Nest HttpAdapter handler generics conflict with Express Request/Response;
+  // cast at the boundary so the host app stays typed via AdminPanelPublicConfig.
+  httpAdapter.get(configPath, ((_req, res) => {
+    (res as { json: (body: AdminPanelPublicConfig) => void }).json({
+      title: adminPanel.title,
+      theme: adminPanel.theme,
+    });
+  }) as Parameters<typeof httpAdapter.get>[1]);
 
   const adminDist = host.distPath
     ? isAbsolute(host.distPath)
@@ -65,9 +59,9 @@ export function setupAdminPanel(
 
   httpAdapter.get(
     `${adminPath}/*path`,
-    (_req: unknown, res: { sendFile: (path: string) => void }) => {
-      res.sendFile(indexHtml);
-    },
+    ((_req, res) => {
+      (res as { sendFile: (path: string) => void }).sendFile(indexHtml);
+    }) as Parameters<typeof httpAdapter.get>[1],
   );
 
   console.log(

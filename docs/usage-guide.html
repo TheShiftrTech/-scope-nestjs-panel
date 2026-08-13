@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>@scope/nestjs-panel — Usage Guide</title>
+  <title>@theshiftrtech/nestjs-panel — Usage Guide</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -97,7 +97,7 @@
     <div class="cover-inner">
       <img class="cover-logo" src="assets/shftr-logo.webp" alt="SHFTR" />
       <div class="eyebrow">npm package · NestJS 11</div>
-      <h1>@scope/nestjs-panel</h1>
+      <h1>@theshiftrtech/nestjs-panel</h1>
       <div class="cover-sub">Usage Guide</div>
       <p class="cover-lead">
         Official handbook for installing, configuring, and extending the SHFTR
@@ -141,7 +141,7 @@
     <div class="section-label">01</div>
     <h2>Overview</h2>
     <p>
-      <code>@scope/nestjs-panel</code> is a standalone npm package that adds an operator admin UI
+      <code>@theshiftrtech/nestjs-panel</code> is a standalone npm package that adds an operator admin UI
       to any NestJS API. Annotate controllers with <code>@PanelModule</code>, <code>@PanelApi</code>,
       and <code>@PanelAction</code>; run the bundled generator; serve a branded React SPA from the
       same HTTP process.
@@ -172,14 +172,16 @@
   <section class="page">
     <div class="section-label">02</div>
     <h2>Installation</h2>
-    <pre>npm install @scope/nestjs-panel</pre>
+    <pre>npm install @theshiftrtech/nestjs-panel</pre>
     <p>Ensure peer dependencies are satisfied in your Nest application:</p>
     <pre>@nestjs/common  @nestjs/core  @nestjs/config
 @nestjs/platform-express  @nestjs/swagger
 class-validator  class-transformer
 reflect-metadata  rxjs</pre>
-    <p>The generator CLI requires <code>ts-morph</code> in your project (devDependency):</p>
-    <pre>npm install -D ts-morph</pre>
+    <p>
+      The package bundles <code>ts-morph</code> for the generator CLI — you do not need to install it
+      separately.
+    </p>
     <h3>Recommended npm script</h3>
     <pre>{
   "scripts": {
@@ -196,7 +198,7 @@ reflect-metadata  rxjs</pre>
     <div class="section-label">03</div>
     <h2>Architecture</h2>
     <p>Internal clean-architecture layers (import only from the package root):</p>
-    <pre>@scope/nestjs-panel
+    <pre>@theshiftrtech/nestjs-panel
 ├── domain/           AdminPanel model, DI tokens, metadata keys
 ├── application/      @Panel* decorators, DTOs, HostBootstrapOptions
 ├── infrastructure/   adminPanelConfig, HMAC auth, setupAdminPanel()
@@ -209,14 +211,14 @@ reflect-metadata  rxjs</pre>
       Build-time flow:
       @Panel* metadata → nestjs-panel generate → manifest → Vite build → dist/
     </div>
-    <p><strong>Dependency rule:</strong> outer layers depend inward. Consumers import only from <code>@scope/nestjs-panel</code>.</p>
+    <p><strong>Dependency rule:</strong> outer layers depend inward. Consumers import only from <code>@theshiftrtech/nestjs-panel</code>.</p>
   </section>
 
   <section class="page">
     <div class="section-label">04</div>
     <h2>Quick start</h2>
     <ol>
-      <li><code>npm install @scope/nestjs-panel</code></li>
+      <li><code>npm install @theshiftrtech/nestjs-panel</code></li>
       <li>Add <code>ADMIN_PANEL_*</code> variables to your <code>.env</code></li>
       <li>Load <code>adminPanelConfig</code> and register <code>AdminPanelModule.forRootAsync()</code></li>
       <li>Call <code>setupAdminPanel()</code> in <code>main.ts</code> with branding</li>
@@ -266,7 +268,7 @@ reflect-metadata  rxjs</pre>
     <div class="section-label">06</div>
     <h2>NestJS integration</h2>
     <h3>AppModule</h3>
-    <pre>import { adminPanelConfig, AdminPanelModule } from "@scope/nestjs-panel";
+    <pre>import { adminPanelConfig, AdminPanelModule } from "@theshiftrtech/nestjs-panel";
 
 @Module({
   imports: [
@@ -279,7 +281,7 @@ reflect-metadata  rxjs</pre>
 })
 export class AppModule {}</pre>
     <h3>main.ts — bootstrap &amp; branding</h3>
-    <pre>import { ADMIN_PANEL, AdminPanel, setupAdminPanel } from "@scope/nestjs-panel";
+    <pre>import { ADMIN_PANEL, AdminPanel, setupAdminPanel } from "@theshiftrtech/nestjs-panel";
 
 const adminFromEnv = app.get&lt;AdminPanel&gt;(ADMIN_PANEL);
 
@@ -325,7 +327,7 @@ setupAdminPanel(
     <pre>import {
   PanelModule, PanelApi, PanelAction,
   ListQueryDto, paginated,
-} from "@scope/nestjs-panel";
+} from "@theshiftrtech/nestjs-panel";
 
 @PanelModule({ title: "Users", icon: "Users", pageType: "list", order: 10 })
 @Controller("users")
@@ -435,7 +437,7 @@ export class UsersController {
       <li>Generator output is a build artifact in your project — treat as deploy output, not package source.</li>
     </ul>
     <div class="footer-note">
-      @scope/nestjs-panel Usage Guide · Built by SHFTR · Version 0.1.0 ·
+      @theshiftrtech/nestjs-panel Usage Guide · Built by SHFTR · Version 0.1.0 ·
       Keep in sync when public API, env keys, or CLI behaviour changes.
     </div>
   </section>

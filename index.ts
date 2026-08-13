@@ -1,5 +1,5 @@
 /**
- * Public API for @scope/nestjs-panel.
+ * Public API for @theshiftrtech/nestjs-panel.
  * Host applications should import only from this barrel.
  */
 

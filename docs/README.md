@@ -1,4 +1,4 @@
-# Docs — @scope/nestjs-panel
+# Docs — @theshiftrtech/nestjs-panel
 
 | Artifact | Purpose |
 |----------|---------|

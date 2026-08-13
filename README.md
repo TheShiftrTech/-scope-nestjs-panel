@@ -2,7 +2,7 @@
   <img src="./docs/assets/shftr-logo.webp" alt="SHFTR" width="280" />
 </p>
 
-<h1 align="center">@scope/nestjs-panel</h1>
+<h1 align="center">@theshiftrtech/nestjs-panel</h1>
 
 <p align="center">
   <strong>NestJS admin panel by <a href="https://shftr.com">SHFTR</a></strong><br />
@@ -22,8 +22,7 @@
 ## Install
 
 ```bash
-npm install @scope/nestjs-panel
-npm install -D ts-morph   # required for the generator CLI
+npm install @theshiftrtech/nestjs-panel
 ```
 
 Peer dependencies (Nest 11, `class-validator`, `class-transformer`, etc.) must be present in your application — the package does not bundle Nest.
@@ -61,7 +60,7 @@ Add to your `package.json`:
 ## Integration
 
 ```ts
-import { adminPanelConfig, AdminPanelModule, setupAdminPanel, AdminPanel, ADMIN_PANEL } from "@scope/nestjs-panel";
+import { adminPanelConfig, AdminPanelModule, setupAdminPanel, AdminPanel, ADMIN_PANEL } from "@theshiftrtech/nestjs-panel";
 
 // AppModule
 ConfigModule.forRoot({ load: [appConfig, adminPanelConfig] }),

@@ -2,9 +2,49 @@
   "name": "@theshiftrtech/nestjs-panel",
   "version": "0.1.0",
   "description": "Decorator-driven NestJS admin panel — runtime module, SPA generator, and static serving by SHFTR",
-  "main": "index.ts",
+  "license": "MIT",
+  "author": "SHFTR",
+  "keywords": [
+    "nestjs",
+    "admin",
+    "admin-panel",
+    "dashboard",
+    "decorators",
+    "react"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheShiftrTech/-scope-nestjs-panel.git"
+  },
+  "homepage": "https://github.com/TheShiftrTech/-scope-nestjs-panel#readme",
+  "bugs": {
+    "url": "https://github.com/TheShiftrTech/-scope-nestjs-panel/issues"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "bin",
+    "LICENSE",
+    "README.md"
+  ],
   "bin": {
     "nestjs-panel": "./bin/nestjs-panel.js"
+  },
+  "scripts": {
+    "build": "tsc && node -e \"require('fs').cpSync('generator/template','dist/generator/template',{recursive:true})\"",
+    "prepublishOnly": "npm run build",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "ts-morph": "^25.0.0"
   },
   "peerDependencies": {
     "@nestjs/common": "^11.0.0",
@@ -21,6 +61,22 @@
     "@nestjs/swagger": {
       "optional": true
     }
+  },
+  "devDependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/config": "^4.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/platform-express": "^11.0.0",
+    "@nestjs/swagger": "^11.0.0",
+    "@types/node": "^22.0.0",
+    "class-transformer": "^0.5.0",
+    "class-validator": "^0.14.0",
+    "reflect-metadata": "^0.2.0",
+    "rxjs": "^7.0.0",
+    "typescript": "^5.8.0"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "engines": {
     "node": ">=20"

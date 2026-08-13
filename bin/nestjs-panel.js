@@ -11,16 +11,13 @@ if (subcommand !== "generate") {
   process.exit(1);
 }
 
-const root = join(__dirname, "..");
-const jsEntry = join(root, "generator", "generate.js");
-const tsEntry = join(root, "generator", "generate.ts");
+const jsEntry = join(__dirname, "..", "dist", "generator", "generate.js");
 
-if (existsSync(jsEntry)) {
-  require(jsEntry);
-} else if (existsSync(tsEntry)) {
-  require("ts-node/register");
-  require(tsEntry);
-} else {
-  console.error("[nestjs-panel] Generator entry not found.");
+if (!existsSync(jsEntry)) {
+  console.error(
+    "[nestjs-panel] Generator not found. The package must be built before use.",
+  );
   process.exit(1);
 }
+
+require(jsEntry);
